@@ -1,3 +1,5 @@
-#define PUBLIC void TEST{
-    Print (2 + 2 * 10);
+if(sum==3){
+    extend function();
+}else{
+    return u/8;
 }

@@ -17,5 +17,5 @@ import org.omg.CORBA.IdentifierHelper;
  */
 public enum Token
 {
-   ReservedWord, Identifier, Comments, IntegerConstant, BoolConstant, DoubleConstant, StringConstant, OperatorsAndPunctuation, ErrorComment, ErrorIdentifier, Error
+      ReservedWord, Identifier, Comments, IntegerConstant, BoolConstant, DoubleConstant, StringConstant, OperatorsAndPunctuation, ErrorComment, ErrorIdentifier, Error
 }

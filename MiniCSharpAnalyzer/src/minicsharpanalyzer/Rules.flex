@@ -6,19 +6,21 @@ import static minicsharpanalyzer.Token.*;
 
 %class Rules
 %type Token
+%line
+%column
 
 Letters =[a-z]|[A-Z]
 Digits =[0-9]
-Identifiers = ({Letters}|{Digits}|"_")+{1,31}
+Identifiers =({Letters}|"_")({Letters}|{Digits}|"_")*
 
 LineTerminator =[\r|\n|\r\n]
 MultipleLineComment ="/*"~"*/"
 SingleLineComment ="//"~{LineTerminator}
 ErrorComment ="/*"~[\r\n]
 
-String ="""~![{LineTerminator}]~"""
+String ="\""([^\n\"\\]*(\\[.\n])*)*"\""  
 
-White =[\t|\n| ]+
+White =[\t|\n|" "]+
 
 ReservedWord ="void"|"int"|"double"|"bool"|"string"|"class"|"interface"|"null"|"this"|"extends"|"implements"|"for"|"while"|"if"|"else"|"return"|"break"|"New"|"NewArray"
 OperatorsPunctuation ="+"|"-"|"*"|"/"|"%"|"<"|"<="|">"|">="|"="|"=="|"!="|"&&"|"||"|"!"|";"|","|"."|"["|"]"|"("|")"|"{"|"}"|"[]"|"()"|"{}"
@@ -28,7 +30,7 @@ EDouble =({Sdouble})["E"|"e"]["+"|"-"|" "]({Digits})
 
 HexElements ={Digits}|[a-f]|[A-F]
 Hexadecimal =["0x"|"0X"]({HexElements})+
-Decimal =(!["0"]+)[Digits]+
+Decimal ={Digits}+
 
 Bool ="true"|"false"
 
@@ -39,6 +41,7 @@ Bool ="true"|"false"
 %}
 
 %%
+{White} { /*Ignore*/ }
 {MultipleLineComment}|{SingleLineComment} {
                                            lexeme = yytext();
                                            column = yycolumn;
@@ -58,8 +61,6 @@ Bool ="true"|"false"
             line = yyline;
             return  StringConstant;
          }
-
-{White} { /*Ignore*/ }
 {ReservedWord} { 
                   lexeme = yytext();
                   column = yycolumn;
@@ -73,7 +74,7 @@ Bool ="true"|"false"
                         return DoubleConstant;
                      }
 
-{Hexadecimal}|{Decimal} {
+({Hexadecimal}|{Decimal}) {
                            lexeme = yytext();
                            column = yycolumn;
                            line = yyline;

@@ -133,33 +133,32 @@ public class Sumator extends javax.swing.JFrame
       while(true){
           Token token = lexer.yylex();
           if(token==null){
-             results=results+"FIN";
             jTextArea1.setText(results);//mostrando los resultados
           }
       switch(token){
          case ReservedWord:
-            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_"+lexer.lexeme+"\n";
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+(lexer.column+1)+"-"+(lexer.lexeme.length() + lexer.column)+" is T_"+lexer.lexeme+"\n";
             break;
          case Identifier:
-            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_Identifier\n";
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+(lexer.column+1)+"-"+(lexer.lexeme.length() + lexer.column)+" is T_Identifier\n";
             break;
          case Comments:
-            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_Comment\n";
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+(lexer.column+1)+"-"+(lexer.lexeme.length() + lexer.column)+" is T_Comment\n";
             break;
          case IntegerConstant:
-            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_IntConstant\n";
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+(lexer.column+1)+"-"+(lexer.lexeme.length() + lexer.column)+" is T_IntConstant\n";
             break;
          case BoolConstant:
-            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_BoolConstant\n";
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+(lexer.column+1)+"-"+(lexer.lexeme.length() + lexer.column)+" is T_BoolConstant\n";
             break;
          case DoubleConstant:
-            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_DoubleConstant\n";
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+(lexer.column+1)+"-"+(lexer.lexeme.length() + lexer.column)+" is T_DoubleConstant\n";
             break;
          case StringConstant:
-            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_StringConstant\n";
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+(lexer.column+1)+"-"+(lexer.lexeme.length() + lexer.column)+" is T_StringConstant\n";
             break;
          case OperatorsAndPunctuation:
-            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is '"+lexer.lexeme+"'\n";
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+(lexer.column+1)+"-"+(lexer.lexeme.length() + lexer.column)+" is '"+lexer.lexeme+"'\n";
             break;
          case ErrorComment:
             results+= "*** Error line "+lexer.line+".*** Doesn't finish the comment: "+lexer.lexeme+"\n";
@@ -167,10 +166,10 @@ public class Sumator extends javax.swing.JFrame
          case ErrorIdentifier:
             results+= "*** Error line "+lexer.line+".*** Long identifier will be truncated: "+lexer.lexeme+"\n";
             lexer.lexeme = lexer.lexeme.substring(0, 30);
-            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_Identifier\n";
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+(lexer.column+1)+"-"+(lexer.lexeme.length() + lexer.column)+" is T_Identifier\n";
             break;
          case Error:
-            results+= "*** Error line "+lexer.line+".*** Unrecognized char: ': "+lexer.lexeme+"'\n";
+            results+= "*** Error line "+lexer.line+".*** Unrecognized char: '"+lexer.lexeme+"'\n";
             break;
          default:
             results+= "*** Error line DEFAULT"+lexer.line+".*** Unrecognized char: ': "+lexer.lexeme+"'\n";
