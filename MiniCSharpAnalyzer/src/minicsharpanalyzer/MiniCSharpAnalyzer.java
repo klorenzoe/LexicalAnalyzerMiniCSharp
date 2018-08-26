@@ -5,7 +5,14 @@
  */
 package minicsharpanalyzer;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.io.Reader;
 
 /**
  *
@@ -20,12 +27,18 @@ public class MiniCSharpAnalyzer
    public static void main(String[] args)
    {
       // TODO code application logic here
-      String file_path = "C:\\Users\\usuario\\Desktop\\Universidad\\Sexto ciclo\\Compiladores\\LexicalAnalyzerMiniCSharp\\MiniCSharpAnalyzer\\src\\minicsharpanalyzer";
-      Generate_lexer_file(file_path);
+      String filePath = "src\\minicsharpanalyzer\\Rules.flex";
+      GenerateLexerFile(filePath);
+      Sumator s = new Sumator();
+      s.setVisible(true);
    }
    
-   public static void Generate_lexer_file(String sourcesPath){
-      File source = new File(sourcesPath);
-      JFlex.Main.generate(source);
+   public static void GenerateLexerFile(String sourcesPath){
+         try{
+            File r = new File(sourcesPath);
+            JFlex.Main.generate(r);
+         }
+         catch(Exception e){
+         }
    }
 }
