@@ -20,7 +20,7 @@ ErrorComment ="/*"~[\r\n]
 
 String ="\""([^\n\"\\]*(\\[.\n])*)*"\""  
 
-White =[\t|\n|" "]+
+White =[\t|\n|" "|\r\n]+
 
 ReservedWord ="void"|"int"|"double"|"bool"|"string"|"class"|"interface"|"null"|"this"|"extends"|"implements"|"for"|"while"|"if"|"else"|"return"|"break"|"New"|"NewArray"
 OperatorsPunctuation ="+"|"-"|"*"|"/"|"%"|"<"|"<="|">"|">="|"="|"=="|"!="|"&&"|"||"|"!"|";"|","|"."|"["|"]"|"("|")"|"{"|"}"|"[]"|"()"|"{}"

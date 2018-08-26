@@ -1,5 +1,0 @@
-if(sum==3){
-    extend function();
-}else{
-    return u/8;
-}
