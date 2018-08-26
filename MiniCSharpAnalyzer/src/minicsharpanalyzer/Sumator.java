@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java_cup.runtime.*;
 /**
  *
  * @author usuario
@@ -119,31 +120,60 @@ public class Sumator extends javax.swing.JFrame
    }//GEN-LAST:event_jButton1ActionPerformed
 
    public void analiceFile() throws Exception{
-         File fichero=new File("fichero.txt");//creando fichero txt en raiz
+      File fichero=new File("fichero.txt");//Create file with code to analyze
       PrintWriter writer;
       writer=new PrintWriter(fichero);
       writer.print(jTextArea2.getText());//ingresado ecuacion
       writer.close();
 
       Reader reader = new FileReader(fichero);
-      Lexer lexer=new Lexer(reader);
-      String Resultados="";
-      //se comienza a evaluar cada caracter
+      Rules lexer=new Rules(reader);
+      String results="";
+      //while that run all the text and recognize the tokens
       while(true){
-          Token token=lexer.yylex();
-         if(token==null){Resultados=Resultados+"FIN";
-         jTextArea1.setText(Resultados);//mostrando los resultados
-         return;
-      }//termina evaluacion
+          Token token = lexer.yylex();
+          if(token==null){
+             results=results+"FIN";
+            jTextArea1.setText(results);//mostrando los resultados
+          }
       switch(token){
-         case ERROR://aqui se guardan los errores de lo que no coincide 
-            Resultados=Resultados+"Error, el simbolo no coincide \n";
-         break;
-         case Variable: case Numero://aqui se guardan las variables y los numeros
-            Resultados=Resultados+"Token:"+token+" "+lexer.lexeme+"\n";
-         break;
+         case ReservedWord:
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_"+lexer.lexeme+"\n";
+            break;
+         case Identifier:
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_Identifier\n";
+            break;
+         case Comments:
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_Comment\n";
+            break;
+         case IntegerConstant:
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_IntConstant\n";
+            break;
+         case BoolConstant:
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_BoolConstant\n";
+            break;
+         case DoubleConstant:
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_DoubleConstant\n";
+            break;
+         case StringConstant:
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_StringConstant\n";
+            break;
+         case OperatorsAndPunctuation:
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is '"+lexer.lexeme+"'\n";
+            break;
+         case ErrorComment:
+            results+= "*** Error line "+lexer.line+".*** Doesn't finish the comment: "+lexer.lexeme+"\n";
+            break;
+         case ErrorIdentifier:
+            results+= "*** Error line "+lexer.line+".*** Long identifier will be truncated: "+lexer.lexeme+"\n";
+            lexer.lexeme = lexer.lexeme.substring(0, 30);
+            results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+lexer.column+"-"+(lexer.lexeme.length() + lexer.column)+" is T_Identifier\n";
+            break;
+         case Error:
+            results+= "*** Error line "+lexer.line+".*** Unrecognized char: ': "+lexer.lexeme+"'\n";
+            break;
          default:
-            Resultados=Resultados+"Token:"+token+"\n";//se guardan los operandos +- etc
+            results+= "*** Error line DEFAULT"+lexer.line+".*** Unrecognized char: ': "+lexer.lexeme+"'\n";
             }	
          }
    }
