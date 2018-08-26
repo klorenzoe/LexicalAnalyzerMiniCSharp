@@ -14,9 +14,9 @@ Digits =[0-9]
 Identifiers =({Letters}|"_")({Letters}|{Digits}|"_")*
 
 LineTerminator =[\r|\n|\r\n]
-MultipleLineComment ="/*"~"*/"
+MultipleLineComment =("/*"~"*/")
 SingleLineComment ="//"~{LineTerminator}
-ErrorComment ="/*"~[\r\n]
+ErrorComment ="/*"~[^"*/"]
 
 String ="\""([^\n\"\\]*(\\[.\n])*)*"\""  
 
@@ -26,10 +26,10 @@ ReservedWord ="void"|"int"|"double"|"bool"|"string"|"class"|"interface"|"null"|"
 OperatorsPunctuation ="+"|"-"|"*"|"/"|"%"|"<"|"<="|">"|">="|"="|"=="|"!="|"&&"|"||"|"!"|";"|","|"."|"["|"]"|"("|")"|"{"|"}"|"[]"|"()"|"{}"
 
 Sdouble =({Digits})+"."({Digits})*
-EDouble =({Sdouble})["E"|"e"]["+"|"-"|" "]({Digits})
+EDouble =({Sdouble})("E"|"e")("+"|"-"|"")({Digits}+)
 
 HexElements ={Digits}|[a-f]|[A-F]
-Hexadecimal =["0x"|"0X"]({HexElements})+
+Hexadecimal =("0x"|"0X"){HexElements}+
 Decimal ={Digits}+
 
 Bool ="true"|"false"
@@ -49,11 +49,11 @@ Bool ="true"|"false"
                                            return Comments; 
                                           }
 {ErrorComment} { 
-                  lexeme = yytext();
-                  column = yycolumn;
-                  line = yyline;
-                  return ErrorComment; 
-               }
+                        lexeme = yytext();
+                        column = yycolumn;
+                        line = yyline;
+                        return ErrorComment; 
+                     }
 
 {String} { 
             lexeme = yytext();
@@ -74,7 +74,7 @@ Bool ="true"|"false"
                         return DoubleConstant;
                      }
 
-({Hexadecimal}|{Decimal}) {
+{Hexadecimal}|{Decimal} {
                            lexeme = yytext();
                            column = yycolumn;
                            line = yyline;

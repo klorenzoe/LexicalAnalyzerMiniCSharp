@@ -6,6 +6,8 @@
 package minicsharpanalyzer;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,6 +36,8 @@ public class Sumator extends javax.swing.JFrame
    public Sumator()
    {
       initComponents();
+      Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+      this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
    }
 
    /**
@@ -62,12 +66,19 @@ public class Sumator extends javax.swing.JFrame
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+      jPanel1.setBackground(new java.awt.Color(60, 43, 62));
+
       txtCode.setColumns(20);
       txtCode.setRows(5);
       jScrollPane2.setViewportView(txtCode);
 
+      jLabel1.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 36)); // NOI18N
+      jLabel1.setForeground(new java.awt.Color(204, 140, 139));
       jLabel1.setText("C# code");
 
+      btnAnalyze.setBackground(new java.awt.Color(245, 210, 188));
+      btnAnalyze.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
+      btnAnalyze.setForeground(new java.awt.Color(60, 43, 62));
       btnAnalyze.setText("Analyce Code");
       btnAnalyze.addActionListener(new java.awt.event.ActionListener()
       {
@@ -81,8 +92,13 @@ public class Sumator extends javax.swing.JFrame
       txtResult.setRows(5);
       jScrollPane1.setViewportView(txtResult);
 
+      jLabel2.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 36)); // NOI18N
+      jLabel2.setForeground(new java.awt.Color(204, 140, 139));
       jLabel2.setText("Done analysis");
 
+      btnSearchFile.setBackground(new java.awt.Color(245, 210, 188));
+      btnSearchFile.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
+      btnSearchFile.setForeground(new java.awt.Color(60, 43, 62));
       btnSearchFile.setText("Search");
       btnSearchFile.addActionListener(new java.awt.event.ActionListener()
       {
@@ -92,10 +108,16 @@ public class Sumator extends javax.swing.JFrame
          }
       });
 
+      jLabel4.setBackground(new java.awt.Color(204, 140, 139));
+      jLabel4.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 18)); // NOI18N
+      jLabel4.setForeground(new java.awt.Color(204, 140, 139));
       jLabel4.setText("Saved on: ");
 
       txtSavedOn.setEnabled(false);
 
+      jButton3.setBackground(new java.awt.Color(245, 210, 188));
+      jButton3.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
+      jButton3.setForeground(new java.awt.Color(60, 43, 62));
       jButton3.setText("Open it");
       jButton3.addActionListener(new java.awt.event.ActionListener()
       {
@@ -115,7 +137,10 @@ public class Sumator extends javax.swing.JFrame
             .addGap(45, 45, 45)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(jLabel1)
+               .addGroup(jPanel1Layout.createSequentialGroup()
+                  .addComponent(jLabel1)
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                  .addComponent(btnAnalyze))
                .addGroup(jPanel1Layout.createSequentialGroup()
                   .addComponent(btnSearchFile)
                   .addGap(18, 18, 18)
@@ -126,18 +151,16 @@ public class Sumator extends javax.swing.JFrame
                   .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                      .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE)
                      .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSavedOn, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                           .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                           .addComponent(txtSavedOn, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                  .addContainerGap(305, Short.MAX_VALUE))
+                  .addContainerGap(32, Short.MAX_VALUE))
                .addGroup(jPanel1Layout.createSequentialGroup()
                   .addGap(9, 9, 9)
                   .addComponent(jLabel2)
-                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                  .addComponent(btnAnalyze)
-                  .addGap(208, 208, 208))))
+                  .addGap(208, 386, Short.MAX_VALUE))))
       );
       jPanel1Layout.setVerticalGroup(
          jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,21 +170,26 @@ public class Sumator extends javax.swing.JFrame
                   .addGap(28, 28, 28)
                   .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                      .addComponent(jLabel1)
-                     .addComponent(jLabel2)))
-               .addGroup(jPanel1Layout.createSequentialGroup()
+                     .addComponent(jLabel2))
+                  .addGap(0, 0, Short.MAX_VALUE))
+               .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                   .addContainerGap()
-                  .addComponent(btnAnalyze)))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                  .addComponent(btnAnalyze)
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                  .addComponent(jLabel4)))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                .addComponent(btnSearchFile)
-               .addComponent(jLabel4)
+               .addComponent(txtPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addComponent(txtSavedOn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(jButton3)
-               .addComponent(txtPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGap(18, 18, 18)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-               .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 787, Short.MAX_VALUE)
-               .addComponent(jScrollPane1))
+               .addComponent(jButton3))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+               .addGroup(jPanel1Layout.createSequentialGroup()
+                  .addGap(18, 18, 18)
+                  .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 787, javax.swing.GroupLayout.PREFERRED_SIZE))
+               .addGroup(jPanel1Layout.createSequentialGroup()
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                  .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 787, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addContainerGap())
       );
 

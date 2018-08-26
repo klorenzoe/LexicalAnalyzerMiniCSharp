@@ -16,6 +16,6 @@ import org.omg.CORBA.IdentifierHelper;
  * @author usuario
  */
 public enum Token
-{
+{//([1-9]){Digits}*|0
       ReservedWord, Identifier, Comments, IntegerConstant, BoolConstant, DoubleConstant, StringConstant, OperatorsAndPunctuation, ErrorComment, ErrorIdentifier, Error
 }
