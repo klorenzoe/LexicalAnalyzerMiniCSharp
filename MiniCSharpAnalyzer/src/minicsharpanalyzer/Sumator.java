@@ -314,7 +314,7 @@ public class Sumator extends javax.swing.JFrame
             results+= "*** Error line "+lexer.line+".*** Doesn't finish the comment: "+lexer.lexeme+"\n";
             break;
          case ErrorIdentifier:
-            results+= "*** Error line "+lexer.line+".*** Long identifier will be truncated: "+lexer.lexeme+"\n";
+            results+= "*** line "+lexer.line+".*** Long identifier will be truncated: "+lexer.lexeme+"\n";
             lexer.lexeme = lexer.lexeme.substring(0, 30);
             results+= lexer.lexeme+"\t"+"line "+lexer.line+" cols "+(lexer.column+1)+"-"+(lexer.lexeme.length() + lexer.column)+" is T_Identifier\n";
             break;

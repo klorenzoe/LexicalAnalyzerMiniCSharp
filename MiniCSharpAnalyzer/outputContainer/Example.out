@@ -25,12 +25,12 @@ if	line 9 cols 1-2 is T_if
 (	line 9 cols 3-3 is '('
 23	line 9 cols 4-5 is T_IntConstant
 this	line 9 cols 6-9 is T_this
-*** Error line 11.*** Doesn't finish the comment: /***/
+/***/
 /*
 *comentario
 *multi
 *linea
-*/	line 12 cols 1-35 is T_Comment
+*/	line 11 cols 1-42 is T_Comment
 .	line 19 cols 1-1 is '.'
 12	line 19 cols 2-3 is T_IntConstant
 12.	line 20 cols 1-3 is T_DoubleConstant
@@ -94,7 +94,6 @@ neas	line 41 cols 3-6 is T_Identifier
 *** Error line 41.*** Unrecognized char: '"'
 /* This is a comment \*/	line 43 cols 1-24 is T_Comment
 *** Error line 45.*** Doesn't finish the comment: /*
-comentario	line 46 cols 1-10 is T_Identifier
-sin	line 46 cols 12-14 is T_Identifier
-terminar	line 46 cols 16-23 is T_Identifier
+comentario sin terminar
+
 

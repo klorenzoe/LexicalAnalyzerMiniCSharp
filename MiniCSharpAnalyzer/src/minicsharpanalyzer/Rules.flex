@@ -14,10 +14,9 @@ Digits =[0-9]
 Identifiers =({Letters}|"_")({Letters}|{Digits}|"_")*
 
 LineTerminator =[\r|\n|\r\n]
-MultipleLineComment =("/*"~"*/")
+MultipleLineComment =("/*"~[^"*/"]~"*/")|("/*")["*"]+("/")
 SingleLineComment ="//"~{LineTerminator}
-ErrorComment ="/*"~[^"*/"]
-
+ErrorComment ="/*"~[^*]+
 String ="\""([^\n\"\\]*(\\[.\n])*)*"\""  
 
 White =[\t|\n|" "|\r\n]+
