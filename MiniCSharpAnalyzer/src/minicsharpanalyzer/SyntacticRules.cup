@@ -80,7 +80,7 @@ terminal Boolen    BoolConstant;
    non terminals that have an integer value are listed.  An object
    value means that it can be any type, it isn't set to a specific
    type.  So it could be an Integer or a String or whatever. */
-non terminal Object     InterfaceDecl, Program, Decl, DeclPlus, VariableDecl, Variable, FunctionDecl, Formals, VariablePlus, extendsident, implementsident, IdentifierPlus, ClassDecl, Field, FieldAst, Prototype, StmtBlock, VariableDeclAst, Stmt, StmtAst, ExprBool, elseStmt, IfStmt, ExprPlus, WhileStmt, ForStmt, ReturnStmt, BreakStmt, PrintStmt, Expr, LValue, Call, LibCall, Actuals, Constant, exprPossibilities, DeclPlusBool, IdentifierPlusBool, VariablePlusBool, ExprPlusBool, IdentifierBool, RemoveRecursion;
+non terminal Object     InterfaceDecl, Program, Decl, DeclPlus, VariableDecl, Variable, FunctionDecl, Formals, VariablePlus, extendsident, implementsident, IdentifierPlus, ClassDecl, Field, FieldAst, Prototype, StmtBlock, VariableDeclAst, Stmt, StmtAst, ExprBool, elseStmt, IfStmt, ExprPlus, WhileStmt, ForStmt, ReturnStmt, BreakStmt, PrintStmt, Expr, LValue, Call, LibCall, Actuals, Constant, exprPossibilities, DeclPlusBool, IdentifierPlusBool, VariablePlusBool, ExprPlusBool, IdentifierBool, RemoveRecursion, VariableCommaPlus;
 non terminal String     Type;
    
 
@@ -131,7 +131,7 @@ FunctionDecl::= Type Identifierr parentesisfirst Formals parentesissecond StmtBl
 Formals::=   | VariableCommaPlus;
 
 VariableCommaPlus::= Variable
-                | Variable comma VariablePlus;
+                | Variable comma VariableCommaPlus;
 
 VariablePlusBool::= | Variable;
 

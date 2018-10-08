@@ -1,16 +1,15 @@
-#define PROCEDURE void
+string declarando;
+string declarandoString;
+bool badera;
+int numerointeger;
 
-#define BEGIN {
-#define END }
+class identificadorn extends identificarodnn 
+{
+    double functiondeclared (int numero, int numero2, string palabrasd) {
+    string palabra;
 
-#define BINKY 2 + 2 * 10
-
-
-#PROCEDURE main()
-  
-#BEGIN
-    Print(#BINKY);
-  
-#END
-
-   
+    if( variable1 >= variable2 )
+        ReadInteger();
+    return "cadena retornada";
+    }
+}

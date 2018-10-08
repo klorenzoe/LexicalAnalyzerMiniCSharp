@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.io.Reader;
+import java.nio.file.StandardCopyOption;
 
 /**
  *
@@ -27,9 +28,11 @@ public class MiniCSharpAnalyzer
    public static void main(String[] args)
    {
       // TODO code application logic here
-      String filePath = "src\\minicsharpanalyzer\\Rules.flex";
-      GenerateLexerFile(filePath);
-      Sumator s = new Sumator();
+      String LexerPath = "src\\minicsharpanalyzer\\Rules.flex";
+      String SyntacticPath = "src\\minicsharpanalyzer\\SyntacticRules.cup";
+      GenerateLexerFile(LexerPath);
+      GenerateSyntacticFile(SyntacticPath);
+      AnalizerFrame s = new AnalizerFrame();
       s.setVisible(true);
    }
    
@@ -40,5 +43,20 @@ public class MiniCSharpAnalyzer
          }
          catch(Exception e){
          }
+   }
+   
+   public static void GenerateSyntacticFile(String path){
+      String[] commands = {"-parser", "SyntacticRules", path};
+      try
+      {
+         String fromRules = "SyntacticRules.java";
+         String fromSymbols = "sym.java";
+         java_cup.Main.main(commands);
+         Files.move(Paths.get(fromRules), Paths.get("src\\minicsharpanalyzer\\"+fromRules), StandardCopyOption.REPLACE_EXISTING);
+         Files.move(Paths.get(fromSymbols), Paths.get("src\\minicsharpanalyzer\\"+fromSymbols), StandardCopyOption.REPLACE_EXISTING);
+      }
+      catch(Exception e)
+      {
+      }
    }
 }

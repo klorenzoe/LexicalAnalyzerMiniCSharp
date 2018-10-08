@@ -26,14 +26,14 @@ import javax.swing.text.DefaultStyledDocument;
  *
  * @author usuario
  */
-public class Sumator extends javax.swing.JFrame
+public class AnalizerFrame extends javax.swing.JFrame
 {
    public File inputCode = null;
    public String fileName = "";
    /**
     * Creates new form Sumator
     */
-   public Sumator()
+   public AnalizerFrame()
    {
       initComponents();
       Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -210,13 +210,13 @@ public class Sumator extends javax.swing.JFrame
    private void btnAnalyzeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnAnalyzeActionPerformed
    {//GEN-HEADEREND:event_btnAnalyzeActionPerformed
       // TODO add your handling code here:
+      Rules.result_lexical_analyzer = "";
       try
       {
          if(inputCode!=null){
-          String AnalyceResult = AnalyzeFile();
-          txtResult.setText(AnalyceResult);//Show the results on txtArea
+          String AnalyzeResult = AnalyzeTokens();
           PrintWriter writer = new PrintWriter(new File("outputContainer/"+fileName.split("\\.")[0]+".out"), "UTF-8");
-                  writer.println(AnalyceResult);
+                  writer.println(AnalyzeResult);
                   writer.close();
          }
          txtSavedOn.setText("outputContainer/"+fileName.split("\\.")[0]+".out");
@@ -275,12 +275,12 @@ public class Sumator extends javax.swing.JFrame
       }
    }//GEN-LAST:event_btnSearchFileActionPerformed
 
-   public String AnalyzeFile() throws Exception{
+   public String AnalyzeTokens() throws Exception{
      Reader reader = new FileReader(inputCode);
       Rules lexer=new Rules(reader);
       String results="";
       //while that run all the text and recognize the tokens
-      while(true){
+    /*  while(true){
           Token token = lexer.yylex();
           if(token==null){
             return results;
@@ -324,8 +324,35 @@ public class Sumator extends javax.swing.JFrame
          default:
             results+= "*** Error line DEFAULT"+(lexer.line+1)+".*** Unrecognized char: ': "+lexer.lexeme+"'\n";
             }	
-         }
+         }*/
+      
+     AnalyzeSyntactic(lexer);
+     String lexerResult = lexer.result_lexical_analyzer;
+     lexer.result_lexical_analyzer = "";
+     return lexerResult;
    }
+   
+   private void AnalyzeSyntactic(Rules lexicalAnalyzer_)
+   {
+      try
+      {
+         SyntacticRules Syntactic = new SyntacticRules(lexicalAnalyzer_);
+         Syntactic.parse();
+         
+         String ResultToReturn = Syntactic.report_error_result;
+         if(ResultToReturn.equals(""))
+         {
+            ResultToReturn = "Correct!";
+         }
+         txtResult.setText(ResultToReturn);//Show the results on txtArea
+      }
+      catch(Exception e)
+      {
+         txtResult.setText(e.getMessage());
+      }
+   }
+   
+   
    /**
     * @param args the command line arguments
     */
@@ -349,20 +376,21 @@ public class Sumator extends javax.swing.JFrame
       }
       catch (ClassNotFoundException ex)
       {
-         java.util.logging.Logger.getLogger(Sumator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+         java.util.logging.Logger.getLogger(AnalizerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
       }
       catch (InstantiationException ex)
       {
-         java.util.logging.Logger.getLogger(Sumator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+         java.util.logging.Logger.getLogger(AnalizerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
       }
       catch (IllegalAccessException ex)
       {
-         java.util.logging.Logger.getLogger(Sumator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+         java.util.logging.Logger.getLogger(AnalizerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
       }
       catch (javax.swing.UnsupportedLookAndFeelException ex)
       {
-         java.util.logging.Logger.getLogger(Sumator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+         java.util.logging.Logger.getLogger(AnalizerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
       }
+        //</editor-fold>
         //</editor-fold>
 
       /* Create and display the form */
@@ -370,7 +398,7 @@ public class Sumator extends javax.swing.JFrame
       {
          public void run()
          {
-            new Sumator().setVisible(true);
+            new AnalizerFrame().setVisible(true);
          }
       });
    }
