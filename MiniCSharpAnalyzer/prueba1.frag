@@ -12,4 +12,9 @@ class identificadorn extends identificarodnn
         ReadInteger();
     return "cadena retornada";
     }
+
+    bool identificadorFuncion( )
+    {
+         null. GetByte ( null ) ( ) ;
+    }
 }

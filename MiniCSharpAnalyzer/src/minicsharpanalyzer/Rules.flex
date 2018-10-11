@@ -44,6 +44,7 @@ parser code {:
         /* Add to the end of the StringBuilder error message created in
            thissmethod the message that was passed into thissmethod. */
         report_error_result+=" message: "+message+"\n";
+
    
         /* Print the contents of the StringBuilder 'm', which contains
            an error message, out on a line. */
@@ -80,10 +81,14 @@ terminal Boolen    BoolConstant;
    non terminals that have an integer value are listed.  An object
    value means that it can be any type, it isn't set to a specific
    type.  So it could be an Integer or a String or whatever. */
-non terminal Object     InterfaceDecl, Program, Decl, DeclPlus, VariableDecl, Variable, FunctionDecl, Formals, VariablePlus, extendsident, implementsident, IdentifierPlus, ClassDecl, Field, FieldAst, Prototype, StmtBlock, VariableDeclAst, Stmt, StmtAst, ExprBool, elseStmt, IfStmt, ExprPlus, WhileStmt, ForStmt, ReturnStmt, BreakStmt, PrintStmt, Expr, LValue, Call, LibCall, Actuals, Constant, exprPossibilities, DeclPlusBool, IdentifierPlusBool, VariablePlusBool, ExprPlusBool, IdentifierBool, RemoveRecursion;
-non terminal String     Type;
-   
 
+non terminal Object Program, DeclAst, Decl, VariableDecl, FunctionDecl, ClassDecl, InterfaceDecl;
+non terminal Object Variable, Type, FunctionRightRecursive, Formals, StmtBlock, FormalsWithComma;
+non terminal Object ExtendIdBool, ImplementsBool, FieldAst, implementssAst, ImplementWithComma, ExprBool;
+non terminal Object Field, PrototypeAst, Prototype,  VariableDeclAst, StmtAst, Stmt, Expr, IfStmt,WhileStmt;
+non terminal Object ForStmt, BreakStmt, ReturnStmt, PrintStmt, ElseBool, ExprCommaPlus, LValue, Call;
+non terminal Object LibCall, Actuals, Constant;
+non terminal Object FormalsAux, IImplementAstAux, PrototypeAux;
 /* -------------Precedence and Associatively of Terminals Section----------- */
    
 /*
@@ -94,121 +99,158 @@ non terminal String     Type;
   
   The precedence defined here would look something like thisswhere the
   lower line always will have higher precedence than the line before it. */
-   
-  precedence left iff, elsee, forr, whilee; 
-  precedence left breakk, returnn;  
-  precedence left parentesisfirst,  parentesissecond, claspfirst, claspsecond, bracketfirst, bracketsecond, parentesis, clasps, brackets;
-  precedence left not, and, or, smaller, smallerEquals, greater, greaterEquals, equals, notequals, times, div, percentage, plus, minus;
-  precedence left Identifierr, BoolConstant, IntegerConstant, DoubleConstant, StringConstant, thiss, neww, newarray,  nulll;  
-  precedence left point, comma, dotcomma; 
-  precedence left getBytee, setBytee, readinteger, readline,  mallocc;
-  precedence left voidd, classs, interfacee, extendss, implementss,  printt, assignment;
-  precedence left booll, intt, doublee, stringg;
+
+  precedence left elsee;
+  precedence left plus, minus, times, div, percentage;
+  precedence left smaller, smallerEquals, greater, greaterEquals, assignment, equals, notequals, and, or, not ;
+  precedence left voidd, classs , interfacee;
+  precedence left intt, stringg, Identifierr, booll, doublee;
+
+
+
   // bracketsecond, dotcomma, assignment,, , , , , smaller, smallerEquals, greater, greaterEquals, equals, notequals, and, or, not, parentesis, point, claspfirst, claspsecond;
 
 /* ----------------------------Grammar Section-------------------- */
    
-Program::= DeclPlus;
+Program::= DeclAst Decl | Decl;
 
-Decl::=   VariableDecl
+Decl::=  VariableDecl
         | FunctionDecl
         | ClassDecl
-        | InterfaceDecl;
+        | InterfaceDecl 
+        | error claspsecond
+        | error dotcomma;
 
-DeclPlus::= Decl DeclPlusBool;
+DeclAst::= | Program;
 
-DeclPlusBool::= |DeclPlus;
+VariableDecl ::= Variable dotcomma ;
 
-VariableDecl::= Variable dotcomma;
+Variable ::= Type Identifierr ;
 
-Variable::= Type Identifierr;
+Type ::= intt
+        | doublee
+        | booll
+        | stringg
+        | Identifierr
+        | Type clasps; //| Type claspfirst claspsecond ;
 
-Type::= intt|doublee|booll|stringg| Identifierr | Type clasps;
 
-FunctionDecl::= Type Identifierr parentesisfirst Formals parentesissecond StmtBlock
-                | voidd Identifierr parentesisfirst Formals parentesissecond StmtBlock;
 
-Formals::=   | VariableCommaPlus;
+FunctionDecl ::= Type FunctionRightRecursive
+| voidd FunctionRightRecursive ;
 
-VariableCommaPlus::= Variable
-                | Variable comma VariablePlus;
+FunctionRightRecursive::= Identifierr parentesisfirst Formals parentesissecond StmtBlock ;
 
-VariablePlusBool::= | Variable;
+Formals::= | Variable FormalsWithComma | Variable;
 
-extendsident::= | extendss Identifierr;
+FormalsWithComma ::= comma Variable FormalsAux;
 
-implementsident::=  | implementss IdentifierPlus comma; 
+FormalsAux::= | FormalsWithComma;
 
-IdentifierPlus::= Identifierr IdentifierPlusBool;
+ClassDecl ::= classs Identifierr ExtendIdBool ImplementsBool bracketfirst FieldAst bracketsecond ;
 
-IdentifierPlusBool::= |IdentifierPlus;
+ExtendIdBool ::= | extendss Identifierr ;
 
-ClassDecl::= classs Identifierr extendsident implementsident bracketfirst FieldAst bracketsecond;
+ImplementsBool ::= | implementss implementssAst;
 
-Field::= VariableDecl 
-        | FunctionDecl;
+implementssAst ::= Identifierr ImplementWithComma | Identifierr;
+ImplementWithComma ::= comma Identifierr IImplementAstAux;
+IImplementAstAux::= | ImplementWithComma;
 
-FieldAst::=  | Field
-            | FieldAst Field;
+FieldAst ::= | FieldAst Field;
 
-InterfaceDecl::= interfacee Identifierr bracketfirst Prototype bracketsecond;
+Field ::= VariableDecl
+| FunctionDecl ;
 
-Prototype::=| Type Identifierr parentesisfirst Formals parentesissecond dotcomma Prototype
-            | voidd Identifierr parentesisfirst Formals parentesissecond dotcomma Prototype;
+InterfaceDecl ::= interfacee Identifierr bracketfirst PrototypeAst bracketsecond ;
 
-StmtBlock::= bracketfirst VariableDeclAst StmtAst bracketsecond;
+PrototypeAst ::= | PrototypeAst Prototype;
 
-VariableDeclAst::= |VariableDecl VariableDeclAst;
+Prototype ::= Type Identifierr PrototypeAux
+            | voidd Identifierr PrototypeAux;
 
-Stmt::= Expr dotcomma | dotcomma  | IfStmt | WhileStmt | ForStmt | BreakStmt | ReturnStmt | PrintStmt  | StmtBlock ;
+PrototypeAux::= Identifierr parentesisfirst Formals parentesissecond dotcomma;
 
-StmtAst::= |Stmt StmtAst;
+StmtBlock ::= bracketfirst VariableDeclAst StmtAst bracketsecond ;
 
-ExprBool::= |Expr;
+VariableDeclAst ::= | VariableDeclAst VariableDecl;
 
-elseStmt::= |elsee Stmt;
+StmtAst ::=  | Stmt StmtAst;
 
-IfStmt ::= iff parentesisfirst Expr parentesissecond elseStmt;
+Stmt ::= Expr dotcomma
+        | dotcomma
+        | IfStmt
+        | WhileStmt
+        | ForStmt
+        | BreakStmt
+        | ReturnStmt
+        | PrintStmt
+        | StmtBlock ;
 
-ExprPlus::= Expr ExprPlusBool;
+IfStmt ::= iff parentesisfirst Expr parentesissecond Stmt ElseBool ;
 
-ExprPlusBool::= |ExprPlus;
-WhileStmt::= whilee parentesisfirst Expr parentesissecond Stmt;
+ElseBool ::= | elsee Stmt;
 
-ForStmt::= forr parentesisfirst ExprBool dotcomma Expr dotcomma ExprBool parentesissecond Stmt;
+WhileStmt ::= whilee parentesisfirst Expr parentesissecond Stmt ;
 
-ReturnStmt::= returnn ExprBool;
+ForStmt ::= forr parentesisfirst ExprBool dotcomma Expr dotcomma ExprBool parentesissecond Stmt ;
 
-BreakStmt::= breakk dotcomma;
+ExprBool::= | Expr;
 
-PrintStmt::= printt parentesisfirst ExprPlus comma parentesissecond dotcomma;      
+ReturnStmt ::= returnn ExprBool dotcomma ;
 
-Expr::= LValue assignment Expr RemoveRecursion | Constant RemoveRecursion | LValue RemoveRecursion |
-        thiss RemoveRecursion | Call RemoveRecursion | parentesisfirst Expr parentesissecond | not Expr RemoveRecursion |
-        neww parentesisfirst Identifierr parentesissecond RemoveRecursion | newarray parentesisfirst Expr comma Type parentesissecond  RemoveRecursion  |  readinteger parentesis RemoveRecursion |
-        readline parentesis RemoveRecursion | mallocc parentesisfirst Expr parentesissecond RemoveRecursion;
+BreakStmt ::= breakk dotcomma ;
 
-RemoveRecursion::=  | exprPossibilities RemoveRecursion | minus Expr RemoveRecursion;
+PrintStmt ::= printt parentesisfirst ExprCommaPlus parentesissecond dotcomma ;
 
-exprPossibilities::= plus Expr
-                    | times Expr
-                    | div Expr
-                    | percentage Expr
-                    | smaller Expr
-                    | smallerEquals Expr
-                    | greater Expr
-                    | greaterEquals Expr
-                    | equals Expr
-                    | notequals Expr
-                    | and Expr
-                    | or Expr;
+ExprCommaPlus ::= ExprCommaPlus comma Expr | Expr ;
 
-LValue::= Identifierr | Expr point Identifierr | Expr claspfirst Expr claspsecond;
+Expr ::= LValue assignment Expr
+| parentesisfirst Expr parentesissecond 
+| Expr plus Expr
+| Expr minus Expr
+| Expr times Expr
+| Expr div Expr
+| Expr percentage Expr
+| minus Expr
+| Expr smaller Expr
+| Expr smallerEquals Expr
+| Expr greater Expr
+| Expr greaterEquals Expr
+| Expr equals Expr
+| Expr notequals Expr
+| Expr and Expr
+| Expr or Expr
+| not Expr
+| neww parentesisfirst Identifierr parentesissecond
+| newarray parentesisfirst Expr comma Type parentesissecond
+| readinteger parentesis | readinteger parentesisfirst parentesissecond
+| readline parentesis | readline parentesisfirst parentesissecond
+| mallocc parentesisfirst Expr parentesissecond
+| Constant
+| LValue
+| thiss
+| Call;
 
-Call::= Identifierr parentesisfirst Actuals parentesissecond | Expr point Identifierr parentesisfirst Actuals parentesissecond;
 
-LibCall::= getBytee parentesisfirst Expr parentesissecond  | setBytee parentesisfirst Expr comma Expr parentesissecond;
 
-Actuals::= | ExprPlus comma;
+LValue ::= Identifierr
+| Expr point Identifierr
+| Expr claspfirst Expr claspsecond ;
 
-Constant::= IntegerConstant | DoubleConstant | BoolConstant | StringConstant | nulll;
+
+
+Call ::= Identifierr parentesisfirst Actuals parentesissecond 
+| Expr point Identifierr  Identifierr parentesisfirst Actuals parentesissecond 
+| Expr point LibCall parentesisfirst Actuals parentesissecond  ;
+
+LibCall ::= getBytee parentesisfirst Expr parentesissecond 
+| setBytee parentesisfirst Expr comma Expr parentesissecond ;
+
+Actuals ::= | ExprCommaPlus;
+
+Constant ::= IntegerConstant
+| DoubleConstant
+| BoolConstant
+| StringConstant
+| nulll ;
