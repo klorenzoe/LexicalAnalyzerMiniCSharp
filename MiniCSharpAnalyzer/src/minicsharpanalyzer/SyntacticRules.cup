@@ -166,14 +166,15 @@ FieldAst ::= | FieldAst Field;
 Field ::= VariableDecl
 | FunctionDecl ;
 
-InterfaceDecl ::= interfacee Identifierr bracketfirst PrototypeAst bracketsecond ;
+InterfaceDecl::= interfacee Identifierr bracketfirst PrototypeAst bracketsecond ;
 
 PrototypeAst ::= | PrototypeAst Prototype;
 
-Prototype ::= Type Identifierr PrototypeAux
-            | voidd Identifierr PrototypeAux;
+Prototype ::= Type PrototypeAux
+            | voidd PrototypeAux;
 
-PrototypeAux::= Identifierr parentesisfirst Formals parentesissecond dotcomma;
+PrototypeAux::= Identifierr parentesisfirst Formals parentesissecond dotcomma 
+                | Identifierr parentesis dotcomma;
 
 StmtBlock ::= bracketfirst VariableDeclAst StmtAst bracketsecond ;
 
