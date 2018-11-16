@@ -1,13 +1,10 @@
 
 package minicsharpanalyzer;
-//import static minicsharpanalyzer.Token.*;
 import java_cup.runtime.*;
-//import java-cup-11a.runtime.*;
 
 %%
 
 %class Rules
-//%type Token
 %unicode
 %cup
 %line

@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.*;
@@ -30,6 +31,7 @@ public class AnalizerFrame extends javax.swing.JFrame
 {
    public File inputCode = null;
    public String fileName = "";
+
    /**
     * Creates new form Sumator
     */
@@ -38,6 +40,7 @@ public class AnalizerFrame extends javax.swing.JFrame
       initComponents();
       Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
       this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+      Singleton.ListInstances();
    }
 
    /**
@@ -61,8 +64,10 @@ public class AnalizerFrame extends javax.swing.JFrame
       btnSearchFile = new javax.swing.JButton();
       jLabel4 = new javax.swing.JLabel();
       txtSavedOn = new javax.swing.JTextField();
-      jButton3 = new javax.swing.JButton();
+      openLexicalAnalysis = new javax.swing.JButton();
       txtPath = new javax.swing.JTextField();
+      txtSymbolTableDir = new javax.swing.JTextField();
+      jButton4 = new javax.swing.JButton();
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -114,20 +119,41 @@ public class AnalizerFrame extends javax.swing.JFrame
       jLabel4.setText("Saved on: ");
 
       txtSavedOn.setEnabled(false);
-
-      jButton3.setBackground(new java.awt.Color(245, 210, 188));
-      jButton3.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
-      jButton3.setForeground(new java.awt.Color(60, 43, 62));
-      jButton3.setText("Open it");
-      jButton3.addActionListener(new java.awt.event.ActionListener()
+      txtSavedOn.addActionListener(new java.awt.event.ActionListener()
       {
          public void actionPerformed(java.awt.event.ActionEvent evt)
          {
-            jButton3ActionPerformed(evt);
+            txtSavedOnActionPerformed(evt);
+         }
+      });
+
+      openLexicalAnalysis.setBackground(new java.awt.Color(245, 210, 188));
+      openLexicalAnalysis.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
+      openLexicalAnalysis.setForeground(new java.awt.Color(60, 43, 62));
+      openLexicalAnalysis.setText("Open lexical analysis");
+      openLexicalAnalysis.addActionListener(new java.awt.event.ActionListener()
+      {
+         public void actionPerformed(java.awt.event.ActionEvent evt)
+         {
+            openLexicalAnalysisActionPerformed(evt);
          }
       });
 
       txtPath.setEnabled(false);
+
+      txtSymbolTableDir.setEnabled(false);
+
+      jButton4.setBackground(new java.awt.Color(245, 210, 188));
+      jButton4.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
+      jButton4.setForeground(new java.awt.Color(60, 43, 62));
+      jButton4.setText("Open symbol table");
+      jButton4.addActionListener(new java.awt.event.ActionListener()
+      {
+         public void actionPerformed(java.awt.event.ActionEvent evt)
+         {
+            jButton4ActionPerformed(evt);
+         }
+      });
 
       javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
       jPanel1.setLayout(jPanel1Layout);
@@ -153,14 +179,20 @@ public class AnalizerFrame extends javax.swing.JFrame
                      .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                           .addComponent(txtSavedOn, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE))
+                           .addComponent(txtSymbolTableDir, javax.swing.GroupLayout.PREFERRED_SIZE, 468, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                  .addContainerGap(32, Short.MAX_VALUE))
+                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                  .addGap(32, 32, 32))
                .addGroup(jPanel1Layout.createSequentialGroup()
-                  .addGap(9, 9, 9)
-                  .addComponent(jLabel2)
-                  .addGap(208, 386, Short.MAX_VALUE))))
+                  .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(jLabel2))
+                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtSavedOn, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(openLexicalAnalysis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                  .addGap(34, 34, 34))))
       );
       jPanel1Layout.setVerticalGroup(
          jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,15 +213,17 @@ public class AnalizerFrame extends javax.swing.JFrame
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                .addComponent(btnSearchFile)
                .addComponent(txtPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(txtSavedOn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(jButton3))
+               .addComponent(txtSymbolTableDir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(jButton4))
+            .addGap(18, 18, 18)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+               .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 787, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addGroup(jPanel1Layout.createSequentialGroup()
-                  .addGap(18, 18, 18)
-                  .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 787, javax.swing.GroupLayout.PREFERRED_SIZE))
-               .addGroup(jPanel1Layout.createSequentialGroup()
-                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                  .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 787, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                  .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                     .addComponent(txtSavedOn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                     .addComponent(openLexicalAnalysis))
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                  .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 753, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addContainerGap())
       );
 
@@ -211,23 +245,34 @@ public class AnalizerFrame extends javax.swing.JFrame
    {//GEN-HEADEREND:event_btnAnalyzeActionPerformed
       // TODO add your handling code here:
       Rules.result_lexical_analyzer = "";
+      
       try
       {
          if(inputCode!=null){
-          String AnalyzeResult = AnalyzeTokens();
-          PrintWriter writer = new PrintWriter(new File("outputContainer/"+fileName.split("\\.")[0]+".out"), "UTF-8");
-                  writer.println(AnalyzeResult);
-                  writer.close();
+         String AnalyzeResult = AnalyzeTokens();
+         PrintWriter writer = new PrintWriter(new File("outputContainer/"+fileName.split("\\.")[0]+".out"), "UTF-8");
+                 writer.println(AnalyzeResult);
+                 writer.close();
+          
+         PrintWriter writer2 = new PrintWriter(new File("symbolTables/"+fileName.split("\\.")[0]+".csv"), "UTF-8");
+                  writer2.println(SymbolTableReulst(Singleton.Symbol_list, Singleton.Symbol_function_list, Singleton.Error_report));
+                  writer2.close();
          }
+         
+         Singleton.ClearLists();
+         
          txtSavedOn.setText("outputContainer/"+fileName.split("\\.")[0]+".out");
+         txtSymbolTableDir.setText("symbolTables/"+fileName.split("\\.")[0]+".csv");
       }catch(Exception e)
       {
+         String m = e.getMessage();
       }
    }//GEN-LAST:event_btnAnalyzeActionPerformed
 
-   private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
-   {//GEN-HEADEREND:event_jButton3ActionPerformed
-      // TODO add your handling code here:
+   private void openLexicalAnalysisActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_openLexicalAnalysisActionPerformed
+   {//GEN-HEADEREND:event_openLexicalAnalysisActionPerformed
+        // TODO add your handling code here:
+      
       try{
          if(txtSavedOn.getText()!=""){
          File file = new File(txtSavedOn.getText());
@@ -243,7 +288,7 @@ public class AnalizerFrame extends javax.swing.JFrame
       }catch(Exception e){
          JOptionPane.showMessageDialog(null,"The file is not possible to open...");
       }
-   }//GEN-LAST:event_jButton3ActionPerformed
+   }//GEN-LAST:event_openLexicalAnalysisActionPerformed
 
    private void btnSearchFileActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnSearchFileActionPerformed
    {//GEN-HEADEREND:event_btnSearchFileActionPerformed
@@ -274,6 +319,32 @@ public class AnalizerFrame extends javax.swing.JFrame
          JOptionPane.showMessageDialog(null,"It is necessary a file (: ");
       }
    }//GEN-LAST:event_btnSearchFileActionPerformed
+
+   private void jButton4ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton4ActionPerformed
+   {//GEN-HEADEREND:event_jButton4ActionPerformed
+      // TODO add your handling code here:
+       // TODO add your handling code here:
+      try{
+         if(txtSymbolTableDir.getText()!=""){
+         File file = new File(txtSymbolTableDir.getText());
+        
+        //first check if Desktop is supported by Platform or not
+        if(!Desktop.isDesktopSupported()){
+           JOptionPane.showMessageDialog(null,"The source to open the file is not supported for this PC ");
+        }else{
+           Desktop desktop = Desktop.getDesktop();
+           if(file.exists()) desktop.open(file);
+        }
+      }
+      }catch(Exception e){
+         JOptionPane.showMessageDialog(null,"The file is not possible to open...");
+      }
+   }//GEN-LAST:event_jButton4ActionPerformed
+
+   private void txtSavedOnActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_txtSavedOnActionPerformed
+   {//GEN-HEADEREND:event_txtSavedOnActionPerformed
+      // TODO add your handling code here:
+   }//GEN-LAST:event_txtSavedOnActionPerformed
 
    public String AnalyzeTokens() throws Exception{
      Reader reader = new FileReader(inputCode);
@@ -352,6 +423,37 @@ public class AnalizerFrame extends javax.swing.JFrame
       }
    }
    
+   private String SymbolTableReulst(ArrayList<SymbolT> Symbol_list, ArrayList<SymbolFunction> Symbol_function_list, ArrayList<ErrorSymbol> Error_report){
+      String result = "";
+      
+      result+= "VARIABLES Y CONSTANTES \n";
+      
+      result+="Tipo,Identificador,Valor\n";
+      for (SymbolT S : Symbol_list) {
+        result+= S.type +","+S.identifier+","+S.value+"\n";
+      }
+      result +="\n";
+      
+      result += "FUNCIONES \n";
+      result+="Tipo,Identificador,Parámetros\n";
+        for (SymbolFunction SF : Symbol_function_list) {
+         result+= SF.type+","+SF.identifier+",";
+         for(SymbolT S : SF.parameters){
+           result+= S.type + " " + S.identifier+"; ";
+         }
+         result+="\n";
+        }
+       
+        result+="\n";
+        
+        result+="LOG DE ERRORES\n";
+        result+="Columna,Fila,Contenido,**ERROR**\n";
+        for(ErrorSymbol ES: Error_report){
+           result+=ES.column +","+ ES.row+","+ES.line_content+","+ES.detail+"\n";
+        }
+        
+        return result;
+      }
    
    /**
     * @param args the command line arguments
@@ -406,16 +508,18 @@ public class AnalizerFrame extends javax.swing.JFrame
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton btnAnalyze;
    private javax.swing.JButton btnSearchFile;
-   private javax.swing.JButton jButton3;
+   private javax.swing.JButton jButton4;
    private javax.swing.JLabel jLabel1;
    private javax.swing.JLabel jLabel2;
    private javax.swing.JLabel jLabel4;
    private javax.swing.JPanel jPanel1;
    private javax.swing.JScrollPane jScrollPane1;
    private javax.swing.JScrollPane jScrollPane2;
+   private javax.swing.JButton openLexicalAnalysis;
    private javax.swing.JTextArea txtCode;
    private javax.swing.JTextField txtPath;
    private javax.swing.JTextArea txtResult;
    private javax.swing.JTextField txtSavedOn;
+   private javax.swing.JTextField txtSymbolTableDir;
    // End of variables declaration//GEN-END:variables
 }

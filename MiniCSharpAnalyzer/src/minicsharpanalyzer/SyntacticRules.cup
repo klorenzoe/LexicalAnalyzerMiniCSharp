@@ -4,6 +4,7 @@
 /* Import the class java_cup.runtime.*  */
 package minicsharpanalyzer;
 import java_cup.runtime.*;
+import java.util.*;
    
 /* Parser code to change the way the parser reports errors (include
    line and column number of the error). */
@@ -63,7 +64,7 @@ parser code {:
 :};
    
 
-   
+
 /* ------------Declaration of Terminals and Non Terminals Section----------- */
    
 /* Terminals (tokens returned by the scanner).  
@@ -82,8 +83,9 @@ terminal Boolen    BoolConstant;
    value means that it can be any type, it isn't set to a specific
    type.  So it could be an Integer or a String or whatever. */
 
+non terminal String Type;
 non terminal Object Program, DeclAst, Decl, VariableDecl, FunctionDecl, ClassDecl, InterfaceDecl;
-non terminal Object Variable, Type, FunctionRightRecursive, Formals, StmtBlock, FormalsWithComma;
+non terminal Object Variable, FunctionRightRecursive, Formals, StmtBlock, FormalsWithComma;
 non terminal Object ExtendIdBool, ImplementsBool, FieldAst, implementssAst, ImplementWithComma, ExprBool;
 non terminal Object Field, PrototypeAst, Prototype,  VariableDeclAst, StmtAst, Stmt, Expr, IfStmt,WhileStmt;
 non terminal Object ForStmt, BreakStmt, ReturnStmt, PrintStmt, ElseBool, ExprCommaPlus, LValue, Call;
@@ -129,7 +131,10 @@ DeclPlusBool::= |DeclPlus;
 
 VariableDecl ::= Variable dotcomma ;
 
-Variable ::= Type Identifierr ;
+Variable ::= Type:type_ Identifierr:id_;
+//{:
+//    Singleton.addSymbolTo_SymbolList(id_, type_, null, 0 /*column*/, 0 /*row*/, type_ +" "+ id_);
+//:};
 
 Type ::= intt
         | doublee
@@ -140,8 +145,16 @@ Type ::= intt
 
 
 
-FunctionDecl ::= Type FunctionRightRecursive
-| voidd FunctionRightRecursive ;
+FunctionDecl ::= 
+Type:ty Identifierr:id parentesisfirst Formals parentesissecond StmtBlock
+// {:
+//     Singleton.addSymbolTo_SymbolFunctionList(id, ty.toString(), 0 /*column*/, 0 /*row*/,  ty.toString() +" "+ id);
+// :}
+| voidd:ty Identifierr:id parentesisfirst Formals parentesissecond StmtBlock  
+// {:
+//    Singleton.addSymbolTo_SymbolFunctionList(id, ty.toString(), 0 /*column*/, 0 /*row*/,  ty.toString() +" "+ id);
+// :}
+| Identifierr parentesis StmtBlock;
 
 FunctionRightRecursive::= Identifierr parentesisfirst Formals parentesissecond StmtBlock  | Identifierr parentesis StmtBlock;
 
@@ -208,7 +221,7 @@ BreakStmt ::= breakk dotcomma ;
 
 PrintStmt ::= printt parentesisfirst ExprCommaPlus parentesissecond dotcomma ;
 
-ExprCommaPlus ::= ExprCommaPlus comma Expr | Expr ;
+ExprCommaPlus ::= Expr | ExprCommaPlus comma Expr;
 
 Expr ::= LValue assignment Expr
 | parentesisfirst Expr parentesissecond 
@@ -233,20 +246,21 @@ Expr ::= LValue assignment Expr
 | readline parentesis | readline parentesisfirst parentesissecond
 | mallocc parentesisfirst Expr parentesissecond
 | Constant
+| Call
 | LValue
-| thiss
-| Call;
+| thiss;
 
 
 
 LValue ::= Identifierr
-| Expr point Identifierr
-| Expr claspfirst Expr claspsecond ;
+| Expr point Identifierr ;
+//| Expr parentesisfirst Expr parentesissecond;
 
+//Expr point Identifier ( Expr )
 
 
 Call ::= Identifierr parentesisfirst Actuals parentesissecond 
-| Expr point Identifierr  Identifierr parentesisfirst Actuals parentesissecond 
+| Expr point Identifierr parentesisfirst Actuals parentesissecond 
 | Expr point LibCall parentesisfirst Actuals parentesissecond  ;
 
 LibCall ::= getBytee parentesisfirst Expr parentesissecond 
