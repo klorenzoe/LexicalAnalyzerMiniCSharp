@@ -3,9 +3,11 @@
    
 /* Import the class java_cup.runtime.*  */
 package minicsharpanalyzer;
-import java_cup.runtime.*;
 import java.util.*;
-   
+import java_cup.runtime.*;
+import java_cup.runtime.Symbol;
+
+
 /* Parser code to change the way the parser reports errors (include
    line and column number of the error). */
 parser code {:
@@ -26,7 +28,7 @@ parser code {:
                information in the object info that is being typecasted
                as a java_cup.runtime.Symbol object. */
             java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
-   
+            report_error_result+="val: "+s.value+" "; 
             /* Check if the line number in the input is greater or
                equal to zero. */
             if (s.left >= 0) {                
@@ -62,8 +64,6 @@ parser code {:
         //System.exit(1);
     }
 :};
-   
-
 
 /* ------------Declaration of Terminals and Non Terminals Section----------- */
    
@@ -73,8 +73,9 @@ parser code {:
    that do have an value, in thisscase an integer value, are listed on
    the next line down. */
 terminal String    Identifierr, DoubleConstant, StringConstant, voidd, classs, interfacee, nulll, thiss, extendss, implementss, forr, whilee, iff, elsee, returnn, breakk, neww, newarray, printt, readinteger, readline, mallocc, getBytee, setBytee, comma, parentesisfirst, parentesissecond, bracketfirst, bracketsecond, dotcomma, assignment, plus, minus, times, div, percentage, smaller, smallerEquals, greater, greaterEquals, equals, notequals, and, or, not, parentesis, point, claspfirst, claspsecond, clasps, intt, doublee, booll, stringg, brackets, notfound;
-terminal Integer   IntegerConstant;
-terminal Boolen    BoolConstant;
+terminal String   IntegerConstant;
+terminal String    BoolConstant;
+terminal String    includee, numerall, fileNamee, constt;
    
 /* Non terminals used in the grammar section.  
 
@@ -83,15 +84,16 @@ terminal Boolen    BoolConstant;
    value means that it can be any type, it isn't set to a specific
    type.  So it could be an Integer or a String or whatever. */
 
-non terminal String Type;
+non terminal String Type, Expr;
 non terminal Object Program, DeclAst, Decl, VariableDecl, FunctionDecl, ClassDecl, InterfaceDecl;
 non terminal Object Variable, FunctionRightRecursive, Formals, StmtBlock, FormalsWithComma;
 non terminal Object ExtendIdBool, ImplementsBool, FieldAst, implementssAst, ImplementWithComma, ExprBool;
-non terminal Object Field, PrototypeAst, Prototype,  VariableDeclAst, StmtAst, Stmt, Expr, IfStmt,WhileStmt;
+non terminal Object Field, PrototypeAst, Prototype,  VariableDeclAst, StmtAst, Stmt, IfStmt,WhileStmt;
 non terminal Object ForStmt, BreakStmt, ReturnStmt, PrintStmt, ElseBool, ExprCommaPlus, LValue, Call;
 non terminal Object LibCall, Actuals, Constant;
 non terminal Object FormalsAux, IImplementAstAux, PrototypeAux;
 non terminal Object DeclPlus, DeclPlusBool;
+non terminal Object Includes, FileDeclaration;
 /* -------------Precedence and Associatively of Terminals Section----------- */
    
 /*
@@ -103,11 +105,13 @@ non terminal Object DeclPlus, DeclPlusBool;
   The precedence defined here would look something like thisswhere the
   lower line always will have higher precedence than the line before it. */
 
-  precedence left elsee;
+  
+    precedence left assignment;
   precedence left plus, minus, times, div, percentage;
-  precedence left smaller, smallerEquals, greater, greaterEquals, assignment, equals, notequals, and, or, not ;
+  precedence left smaller, smallerEquals, greater, greaterEquals, equals, notequals, and, or, not;
   precedence left voidd, classs , interfacee;
   precedence left intt, stringg, Identifierr, booll, doublee;
+  precedence left elsee;
 
 
 
@@ -115,12 +119,16 @@ non terminal Object DeclPlus, DeclPlusBool;
 
 /* ----------------------------Grammar Section-------------------- */
    
-Program::= DeclPlus;
+Program::= Includes DeclPlus;
+
+Includes::= | FileDeclaration Includes;
+            
+FileDeclaration::= numerall includee smaller fileNamee:f {: Singleton.AnalyzeOtherFile(f, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, "#include <"+f+">"); :}  greater;
 
 Decl::=  VariableDecl
-        | FunctionDecl
-        | ClassDecl
-        | InterfaceDecl 
+        |  FunctionDecl
+        | {: Singleton.pushEnvironmentQueue(); :} ClassDecl {:Singleton.popEnvironmentQueue(); :}
+        | {: Singleton.pushEnvironmentQueue(); :}  InterfaceDecl {:Singleton.popEnvironmentQueue(); :}
         | error claspsecond
         | error dotcomma;
 
@@ -131,40 +139,61 @@ DeclPlusBool::= |DeclPlus;
 
 VariableDecl ::= Variable dotcomma ;
 
-Variable ::= Type:type_ Identifierr:id_;
-//{:
-//    Singleton.addSymbolTo_SymbolList(id_, type_, null, 0 /*column*/, 0 /*row*/, type_ +" "+ id_);
-//:};
+Variable ::= Type:t Identifierr:i
+{:
+      Singleton.addSymbolTo_SymbolList(i, t, null, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, t +" "+ i);
+:}
+| constt Type:t Identifierr:i
+{:
+      Singleton.addSymbolTo_SymbolList(i, t, null, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, t +" "+ i);
+:}
+;
 
-Type ::= intt
-        | doublee
-        | booll
-        | stringg
-        | Identifierr
-        | Type clasps; //| Type claspfirst claspsecond ;
+Type ::= intt:i {: RESULT = "int"; :}
+        | doublee:d {: RESULT  = "double"; :}
+        | booll:b {: RESULT = "bool"; :}
+        | stringg:s {: RESULT  = "string"; :}
+        | Identifierr:i {: RESULT  = i; :}
+        | Type:t clasps:c {: RESULT = t +"[]"; :}
+        ; 
+        
+        //| Type claspfirst claspsecond ;
 
 
 
 FunctionDecl ::= 
-Type:ty Identifierr:id parentesisfirst Formals parentesissecond StmtBlock
-// {:
-//     Singleton.addSymbolTo_SymbolFunctionList(id, ty.toString(), 0 /*column*/, 0 /*row*/,  ty.toString() +" "+ id);
-// :}
-| voidd:ty Identifierr:id parentesisfirst Formals parentesissecond StmtBlock  
-// {:
-//    Singleton.addSymbolTo_SymbolFunctionList(id, ty.toString(), 0 /*column*/, 0 /*row*/,  ty.toString() +" "+ id);
-// :}
-| Identifierr parentesis StmtBlock;
+Type:ty Identifierr:id parentesisfirst {:Singleton.pushEnvironmentQueue(); Singleton.isParameterEnvironment = true; :} Formals:f {: Singleton.isParameterEnvironment = false; :} parentesissecond StmtBlock
+{: 
+    Singleton.addSymbolTo_SymbolFunctionList(id, ty.toString(), ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1,  ty.toString() +" "+ id); 
+    Singleton.popEnvironmentQueue();
+:}
+| voidd:ty Identifierr:id parentesisfirst  {:Singleton.pushEnvironmentQueue(); Singleton.isParameterEnvironment = true; :} Formals:f {: Singleton.isParameterEnvironment = false; :} parentesissecond StmtBlock  
+{:   
+    Singleton.addSymbolTo_SymbolFunctionList(id, "void", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1,  "void "+ id); 
+    Singleton.popEnvironmentQueue();
+:}
+|  {:Singleton.pushEnvironmentQueue(); :} Type:ty Identifierr:id parentesis StmtBlock 
+{: 
+    Singleton.addSymbolTo_SymbolFunctionList(id, ty.toString(),((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1,  ty.toString() +" "+ id); 
+    Singleton.popEnvironmentQueue();
+:}
+|  {:Singleton.pushEnvironmentQueue(); :} voidd:ty Identifierr:id parentesis StmtBlock 
+{: 
+    Singleton.addSymbolTo_SymbolFunctionList(id, "void", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, "void "+ id); 
+    Singleton.popEnvironmentQueue();
+:};
 
-FunctionRightRecursive::= Identifierr parentesisfirst Formals parentesissecond StmtBlock  | Identifierr parentesis StmtBlock;
-
-Formals::= | Variable FormalsWithComma | Variable;
+Formals::= 
+| Variable FormalsWithComma 
+| Variable;
 
 FormalsWithComma ::= comma Variable FormalsAux;
 
 FormalsAux::= | FormalsWithComma;
 
-ClassDecl ::= classs Identifierr ExtendIdBool ImplementsBool bracketfirst FieldAst bracketsecond ;
+ClassDecl ::= 
+classs Identifierr:i ExtendIdBool ImplementsBool bracketfirst  FieldAst bracketsecond 
+{: Singleton.addClassOrInterfase(i.toString(), "class"); :};
 
 ExtendIdBool ::= | extendss Identifierr ;
 
@@ -179,7 +208,7 @@ FieldAst ::= | FieldAst Field;
 Field ::= VariableDecl
 | FunctionDecl ;
 
-InterfaceDecl::= interfacee Identifierr bracketfirst PrototypeAst bracketsecond ;
+InterfaceDecl::= interfacee Identifierr bracketfirst PrototypeAst bracketsecond;
 
 PrototypeAst ::= | PrototypeAst Prototype;
 
@@ -223,37 +252,37 @@ PrintStmt ::= printt parentesisfirst ExprCommaPlus parentesissecond dotcomma ;
 
 ExprCommaPlus ::= Expr | ExprCommaPlus comma Expr;
 
-Expr ::= LValue assignment Expr
-| parentesisfirst Expr parentesissecond 
-| Expr plus Expr
-| Expr minus Expr
-| Expr times Expr
-| Expr div Expr
-| Expr percentage Expr
-| minus Expr
-| Expr smaller Expr
-| Expr smallerEquals Expr
-| Expr greater Expr
-| Expr greaterEquals Expr
-| Expr equals Expr
-| Expr notequals Expr
-| Expr and Expr
-| Expr or Expr
-| not Expr
+Expr ::= 
+parentesisfirst Expr parentesissecond 
+| Expr:e1 plus Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "+", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" + "+e2.split("!")[0]); :}
+| Expr:e1 minus Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "-", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" - "+e2.split("!")[0]); :}
+| Expr:e1 times Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "*", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" * "+e2.split("!")[0]); :}
+| Expr:e1 div Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "/", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" / "+e2.split("!")[0]); :}
+| Expr:e1 percentage Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "%", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" % "+e2.split("!")[0]); :}
+| minus Expr:e1 {: RESULT = Singleton.OperateUnaryOperators(e1, "-", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, "-"+e1.split("!")[0]); :}
+| Expr:e1 smaller Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "<", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" < "+e2.split("!")[0]); :}
+| Expr:e1 smallerEquals Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "<=", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" <= "+e2.split("!")[0]); :}
+| Expr:e1 greater Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, ">",((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" > "+e2.split("!")[0]); :}
+| Expr:e1 greaterEquals Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, ">=", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" >= "+e2.split("!")[0]);:}
+| Expr:e1 equals Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "==", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" == "+e2.split("!")[0]); :}
+| Expr:e1 notequals Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "!=", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" != "+e2.split("!")[0]); :}
+| Expr:e1 and Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "&&", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" && "+e2.split("!")[0]); :}
+| Expr:e1 or Expr:e2 {: RESULT = Singleton.OperateValues(e1, e2, "||", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, e1.split("!")[0]+" || "+e2.split("!")[0]); :}
+| not Expr:e1 {: RESULT = Singleton.OperateUnaryOperators(e1, "!", ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, "!"+e1.split("!")[0]); :}
 | neww parentesisfirst Identifierr parentesissecond
 | newarray parentesisfirst Expr comma Type parentesissecond
 | readinteger parentesis | readinteger parentesisfirst parentesissecond
 | readline parentesis | readline parentesisfirst parentesissecond
 | mallocc parentesisfirst Expr parentesissecond
-| Constant
-| Call
-| LValue
-| thiss;
+| Constant:c {: RESULT = c.toString(); :}
+| Call:c
+| LValue:v {: RESULT = v.toString(); :}
+| thiss:t {: RESULT = "this"; :}
+|LValue:val assignment Expr:e {: RESULT = Singleton.modifyValueToSymbol(val.toString(), e.toString(), ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).right + 1, ((java_cup.runtime.Symbol)CUP$SyntacticRules$stack.peek()).left + 1, val.toString().split("!")[0]+" = "+ e.toString().split("!")[0]); :};
 
 
-
-LValue ::= Identifierr
-| Expr point Identifierr ;
+LValue ::= Identifierr:i {: RESULT = i+"!var"; :}
+| Expr point Identifierr:i {: RESULT = i+"!var"; :} ; //----------------------------------------------------------------
 //| Expr parentesisfirst Expr parentesissecond;
 
 //Expr point Identifier ( Expr )
@@ -268,8 +297,8 @@ LibCall ::= getBytee parentesisfirst Expr parentesissecond
 
 Actuals ::= | ExprCommaPlus;
 
-Constant ::= IntegerConstant
-| DoubleConstant
-| BoolConstant
-| StringConstant
-| nulll ;
+Constant ::= IntegerConstant:i {: RESULT = i.toString()+"!int"; :}
+| DoubleConstant:d {: RESULT = d+"!double"; :}
+| BoolConstant:b {: RESULT = b+"!bool"; :}
+| StringConstant:s {: RESULT = s+"!string"; :}
+| nulll {: RESULT = "null!comodin"; :};

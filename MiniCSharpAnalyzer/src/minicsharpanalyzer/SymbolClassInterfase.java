@@ -9,11 +9,9 @@ package minicsharpanalyzer;
  *
  * @author usuario
  */
-public class SymbolT
+public class SymbolClassInterfase
 {
-   public String environment; //variable, constant, parameter-variable
+   public String type;
    public String identifier;
-   public String type; //int, double, string...
-   public String value;  //2.5, "word"
-   public boolean isParameter;
+   public String environment;
 }

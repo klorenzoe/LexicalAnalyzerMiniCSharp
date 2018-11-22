@@ -1,0 +1,17 @@
+VARIABLES Y CONSTANTES 
+Tipo,Identificador,Ambiente,Valor
+double,circun,7a7db9a7-be7c-474a-9,128.8056
+double,pi,7a7db9a7-be7c-474a-9,3.1416
+double,radio,7a7db9a7-be7c-474a-9,20.5
+
+FUNCIONES 
+Su ambiente,Tipo,Identificador,Ambiente generado,Parametros
+7a7db9a7-be7c-474a-9,string,f1,8da7df60-5dae-46e7-b,
+7a7db9a7-be7c-474a-9,void,main,fa705589-ecf7-46b2-a,
+
+CLASES E INTERFASES 
+Tipo,Identificador,Ambiente generado
+
+LOG DE ERRORES
+Columna,Fila,Contenido,**ERROR**
+

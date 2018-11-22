@@ -1,0 +1,23 @@
+string My_String;
+
+class Parser implements lexical, syntactical
+{
+ int a1;
+  
+  int f1(int a, int b, int c) {
+  {
+  if (a>b) p1=2; else p1=3;
+  My_String = "This is a string";
+  }
+  return (p1) ;
+  }
+
+  void proc1(double y)
+  {
+  while (a1 <= y) {
+  a1 = a1 * 00.0001;
+  if (a1 == 0) break;
+  }
+  }
+}
+

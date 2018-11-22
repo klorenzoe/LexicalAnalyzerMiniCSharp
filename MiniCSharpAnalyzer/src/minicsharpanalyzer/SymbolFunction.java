@@ -12,6 +12,8 @@ import java.util.ArrayList;
  */
 public class SymbolFunction
 {
+   public String itsEnvironment;
+   public String functionEnvironment;
    public String identifier;
    public String type; //int, double, string...
    ArrayList<SymbolT> parameters;

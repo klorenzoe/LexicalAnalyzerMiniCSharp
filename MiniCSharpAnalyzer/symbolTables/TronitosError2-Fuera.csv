@@ -1,0 +1,45 @@
+VARIABLES Y CONSTANTES 
+Tipo,Identificador,Ambiente,Valor
+string,My_String,d0a84a10-fed3-4fee-b,"This is a string"
+int,a1,77e03750-26bf-4b2b-8,null
+int,a,5615034a-736c-4a96-9,null
+int,b,5615034a-736c-4a96-9,null
+int,c,5615034a-736c-4a96-9,null
+double,y,5cd88b3d-3c64-4ee0-b,null
+int,m1,75bc95f8-4de4-443f-b,m1
+int,m2,75bc95f8-4de4-443f-b,m2
+double,m3,75bc95f8-4de4-443f-b,null
+Parser,MyParser,75bc95f8-4de4-443f-b,null
+int,s,95fa4826-2029-4cd7-9,null
+int,s1,95fa4826-2029-4cd7-9,s1
+
+FUNCIONES 
+Su ambiente,Tipo,Identificador,Ambiente generado,Parametros
+77e03750-26bf-4b2b-8,int,f1,5615034a-736c-4a96-9,int a; int b; int c; 
+77e03750-26bf-4b2b-8,void,proc1,5cd88b3d-3c64-4ee0-b,double y; 
+d0a84a10-fed3-4fee-b,void,main,75bc95f8-4de4-443f-b,
+d0a84a10-fed3-4fee-b,void,proc2,95fa4826-2029-4cd7-9,int s; 
+
+CLASES E INTERFASES 
+Tipo,Identificador,Ambiente generado
+class,Parser,77e03750-26bf-4b2b-8
+
+LOG DE ERRORES
+Columna,Fila,Contenido,**ERROR**
+9,9,a > b,No se puede operar ya que uno de los valores no esta asignado o instanciado
+15,9,p1 = 2,El simbolo a modificar no ha sido instanciado
+26,9,p1 = 3,El simbolo a modificar no ha sido instanciado
+16,17,a1 <= y,El simbolo a1 no existe en la tabla de simbolos
+8,18,a1 = a1,El simbolo a1 no existe en la tabla de simbolos
+8,18,a1 = a1,No se puede operar ya que algun valor no ha sigo asignado
+13,18,null * 00.0001,No se puede operar ya que uno de los valores no esta asignado o instanciado
+13,19,a1 == 0,El simbolo a1 no existe en la tabla de simbolos
+12,30,m1 >= 20,No se puede operar ya que uno de los valores no esta asignado o instanciado
+9,31,m2 = MyParser,Los tipos de datos no coinciden. Tipo int con Parser
+38,31,m2 + 1,No se puede realizar dicha operacion
+8,32,m1 + 2,No se puede realizar dicha operacion
+16,34,m2 + 10,No se puede realizar dicha operacion
+13,35,m1 == 2,No se puede realizar dicha operacion
+13,35,m2 % null,No se puede operar ya que uno de los valores no esta asignado o instanciado
+14,43,s1 * s,No se puede operar el tipo int con el tipo null
+

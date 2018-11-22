@@ -255,7 +255,7 @@ public class AnalizerFrame extends javax.swing.JFrame
                  writer.close();
           
          PrintWriter writer2 = new PrintWriter(new File("symbolTables/"+fileName.split("\\.")[0]+".csv"), "UTF-8");
-                  writer2.println(SymbolTableReulst(Singleton.Symbol_list, Singleton.Symbol_function_list, Singleton.Error_report));
+                  writer2.println(SymbolTableReulst(Singleton.Symbol_list, Singleton.Symbol_function_list, Singleton.Symbol_Class_Interfase, Singleton.Error_report));
                   writer2.close();
          }
          
@@ -300,7 +300,7 @@ public class AnalizerFrame extends javax.swing.JFrame
             chooser.setDialogTitle("Choose file with the C# code");
             chooser.setCurrentDirectory(new java.io.File("."));
             chooser.showOpenDialog(chooser);
-            
+          
             inputCode = new File(chooser.getSelectedFile().getAbsolutePath());
             fileName = chooser.getSelectedFile().getName();
             txtPath.setText(fileName);
@@ -325,7 +325,7 @@ public class AnalizerFrame extends javax.swing.JFrame
       // TODO add your handling code here:
        // TODO add your handling code here:
       try{
-         if(txtSymbolTableDir.getText()!=""){
+         if(!txtSymbolTableDir.getText().equals("")){
          File file = new File(txtSymbolTableDir.getText());
         
         //first check if Desktop is supported by Platform or not
@@ -347,6 +347,11 @@ public class AnalizerFrame extends javax.swing.JFrame
    }//GEN-LAST:event_txtSavedOnActionPerformed
 
    public String AnalyzeTokens() throws Exception{
+      
+     /*
+            Leer el archivo, ir a traer las referencias a los demás archivos.
+            Escribirlas en el primer archivo, escribir un nuevo archivo. Enviar ese al lexer
+            */
      Reader reader = new FileReader(inputCode);
       Rules lexer=new Rules(reader);
       String results="";
@@ -423,31 +428,42 @@ public class AnalizerFrame extends javax.swing.JFrame
       }
    }
    
-   private String SymbolTableReulst(ArrayList<SymbolT> Symbol_list, ArrayList<SymbolFunction> Symbol_function_list, ArrayList<ErrorSymbol> Error_report){
+   private String SymbolTableReulst(ArrayList<SymbolT> Symbol_list, ArrayList<SymbolFunction> Symbol_function_list, ArrayList<SymbolClassInterfase> Symbol_Class_Interfases,  ArrayList<ErrorSymbol> Error_report){
       String result = "";
       
       result+= "VARIABLES Y CONSTANTES \n";
       
-      result+="Tipo,Identificador,Valor\n";
+      result+="Tipo,Identificador,Ambiente,Valor\n";
       for (SymbolT S : Symbol_list) {
-        result+= S.type +","+S.identifier+","+S.value+"\n";
+        result+= S.type +","+S.identifier+","+S.environment+","+S.value+"\n";
       }
       result +="\n";
       
       result += "FUNCIONES \n";
-      result+="Tipo,Identificador,Parámetros\n";
+      result+="Su ambiente,Tipo,Identificador,Ambiente generado,Parametros\n";
         for (SymbolFunction SF : Symbol_function_list) {
-         result+= SF.type+","+SF.identifier+",";
-         for(SymbolT S : SF.parameters){
-           result+= S.type + " " + S.identifier+"; ";
+         result+= SF.itsEnvironment+","+SF.type+","+SF.identifier+","+SF.functionEnvironment+",";
+         for(SymbolT S : Symbol_list){
+            if(S.environment.equals(SF.functionEnvironment) && S.isParameter){
+               result+= S.type + " " + S.identifier+"; ";
+            }
          }
          result+="\n";
         }
        
+      result+="\n";
+      result += "CLASES E INTERFASES \n";
+      result+="Tipo,Identificador,Ambiente generado\n";
+        for (SymbolClassInterfase SCI : Symbol_Class_Interfases) {
+         result+= SCI.type+","+SCI.identifier+","+SCI.environment+"\n";
+        }
         result+="\n";
         
         result+="LOG DE ERRORES\n";
         result+="Columna,Fila,Contenido,**ERROR**\n";
+        if(Error_report.size() > 0){
+          txtResult.setText(txtResult.getText() +"\n Errors on symbol table");
+        }
         for(ErrorSymbol ES: Error_report){
            result+=ES.column +","+ ES.row+","+ES.line_content+","+ES.detail+"\n";
         }

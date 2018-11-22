@@ -1,0 +1,15 @@
+VARIABLES Y CONSTANTES 
+Tipo,Identificador,Ambiente,Valor
+int,A,fdc85c65-0368-4031-9,9
+double,B,fdc85c65-0368-4031-9,309.15000000000003
+
+FUNCIONES 
+Su ambiente,Tipo,Identificador,Ambiente generado,Parametros
+fdc85c65-0368-4031-9,int,asignar,0a8867bd-d512-477c-9,
+
+CLASES E INTERFASES 
+Tipo,Identificador,Ambiente generado
+
+LOG DE ERRORES
+Columna,Fila,Contenido,**ERROR**
+

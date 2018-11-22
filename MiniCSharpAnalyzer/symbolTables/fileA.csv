@@ -1,0 +1,45 @@
+VARIABLES Y CONSTANTES 
+Tipo,Identificador,Ambiente,Valor
+string,My_String,0eef0075-f55b-4c62-8,"This is a string"
+int,a1,fe7ed811-dd56-408c-b,null
+int,a,9f264e7c-eca0-4d79-8,null
+int,b,9f264e7c-eca0-4d79-8,null
+int,c,9f264e7c-eca0-4d79-8,null
+double,y,f8e3eaee-9de4-46b3-9,null
+int,m1,a4ca7291-c981-4501-8,m1
+int,m2,a4ca7291-c981-4501-8,m2
+double,m3,a4ca7291-c981-4501-8,null
+Parser,MyParser,a4ca7291-c981-4501-8,null
+int,s,3992c4e8-d438-4d16-a,null
+int,s1,3992c4e8-d438-4d16-a,s1
+
+FUNCIONES 
+Su ambiente,Tipo,Identificador,Ambiente generado,Parametros
+fe7ed811-dd56-408c-b,int,f1,9f264e7c-eca0-4d79-8,int a; int b; int c; 
+fe7ed811-dd56-408c-b,void,proc1,f8e3eaee-9de4-46b3-9,double y; 
+0eef0075-f55b-4c62-8,void,main,a4ca7291-c981-4501-8,
+0eef0075-f55b-4c62-8,void,proc2,3992c4e8-d438-4d16-a,int s; 
+
+CLASES E INTERFASES 
+Tipo,Identificador,Ambiente generado
+class,Parser,fe7ed811-dd56-408c-b
+
+LOG DE ERRORES
+Columna,Fila,Contenido,**ERROR**
+0,0,a > b,No se puede operar ya que uno de los valores no esta asignado o instanciado
+0,0,p1 = 2,El simbolo a modificar no ha sido instanciado
+0,0,p1 = 3,El simbolo a modificar no ha sido instanciado
+0,0,a1 <= y,El simbolo a1 no existe en la tabla de simbolos
+0,0,a1 = a1,El simbolo a1 no existe en la tabla de simbolos
+0,0,a1 = a1,No se puede operar ya que algun valor no ha sigo asignado
+0,0,null * 00.0001,No se puede operar ya que uno de los valores no esta asignado o instanciado
+0,0,a1 == 0,El simbolo a1 no existe en la tabla de simbolos
+0,0,m1 >= 20,No se puede operar ya que uno de los valores no esta asignado o instanciado
+0,0,m2 = MyParser,Los tipos de datos no coinciden. Tipo int con Parser
+0,0,m2 + 1,No se puede realizar dicha operacion
+0,0,m1 + 2,No se puede realizar dicha operacion
+0,0,m2 + 10,No se puede realizar dicha operacion
+0,0,m1 == 2,No se puede realizar dicha operacion
+0,0,m2 % null,No se puede operar ya que uno de los valores no esta asignado o instanciado
+0,0,s1 * s,No se puede operar el tipo int con el tipo null
+

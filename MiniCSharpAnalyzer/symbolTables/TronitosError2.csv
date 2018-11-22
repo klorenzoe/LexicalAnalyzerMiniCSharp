@@ -1,0 +1,31 @@
+VARIABLES Y CONSTANTES 
+Tipo,Identificador,Ambiente,Valor
+string,My_String,1344b281-4279-4dbf-9,null
+int,a1,68665c27-e2ee-4752-a,null
+int,a,719fdfbd-3a8b-4563-a,null
+int,b,719fdfbd-3a8b-4563-a,null
+int,c,719fdfbd-3a8b-4563-a,null
+double,y,623167c0-29a4-4b8c-b,null
+int,m2,68665c27-e2ee-4752-a,null
+double,m3,68665c27-e2ee-4752-a,null
+Parser,MyParser,68665c27-e2ee-4752-a,null
+
+FUNCIONES 
+Su ambiente,Tipo,Identificador,Ambiente generado,Parametros
+68665c27-e2ee-4752-a,int,f1,719fdfbd-3a8b-4563-a,int a; int b; int c; 
+68665c27-e2ee-4752-a,void,proc1,623167c0-29a4-4b8c-b,double y; 
+
+CLASES E INTERFASES 
+Tipo,Identificador,Ambiente generado
+
+LOG DE ERRORES
+Columna,Fila,Contenido,**ERROR**
+0,0,a > b,No se puede operar ya que uno de los valores no esta asignado o instanciado
+0,0,p1 = 2,El simbolo a modificar no ha sido instanciado
+0,0,p1 = 3,El simbolo a modificar no ha sido instanciado
+0,0,a1 <= y,El simbolo a1 no existe en la tabla de simbolos
+0,0,a1 = a1,El simbolo a1 no existe en la tabla de simbolos
+0,0,a1 = a1,No se puede operar ya que algun valor no ha sigo asignado
+0,0,null * 00.0001,No se puede operar ya que uno de los valores no esta asignado o instanciado
+0,0,a1 == 0,El simbolo a1 no existe en la tabla de simbolos
+

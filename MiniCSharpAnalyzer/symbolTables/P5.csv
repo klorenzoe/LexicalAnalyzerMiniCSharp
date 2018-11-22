@@ -1,0 +1,26 @@
+VARIABLES Y CONSTANTES 
+Tipo,Identificador,Ambiente,Valor
+int,m1,bbc6966e-a403-4961-a,null
+int,m2,bbc6966e-a403-4961-a,null
+double,m3,bbc6966e-a403-4961-a,null
+Parser,MyParser,bbc6966e-a403-4961-a,null
+
+FUNCIONES 
+Su ambiente,Tipo,Identificador,Ambiente generado,Parametros
+65e0f276-ad0c-4cb2-b,void,main,bbc6966e-a403-4961-a,
+
+CLASES E INTERFASES 
+Tipo,Identificador,Ambiente generado
+
+LOG DE ERRORES
+Columna,Fila,Contenido,**ERROR**
+12,7,m1 >= 20,No se puede operar ya que uno de los valores no esta asignado o instanciado
+9,8,m2 = MyParser,Los tipos de datos no coinciden. Tipo int con Parser
+38,8,m2 + 1,No se puede operar ya que uno de los valores no esta asignado o instanciado
+38,8,m2 = null,No se puede operar ya que algun valor no ha sigo asignado o bien, algo no se ha instanciado
+8,9,m1 + 2,No se puede operar ya que uno de los valores no esta asignado o instanciado
+8,9,m1 = null,No se puede operar ya que algun valor no ha sigo asignado o bien, algo no se ha instanciado
+16,11,m2 + 10,No se puede operar ya que uno de los valores no esta asignado o instanciado
+13,12,m1 == 2,No se puede operar ya que uno de los valores no esta asignado o instanciado
+13,12,m2 % null,No se puede operar ya que uno de los valores no esta asignado o instanciado
+

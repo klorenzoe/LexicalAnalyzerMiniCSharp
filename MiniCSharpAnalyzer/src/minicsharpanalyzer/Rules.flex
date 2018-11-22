@@ -18,6 +18,8 @@ import java_cup.runtime.*;
    private Symbol symbol(int type, Object value){
        return new Symbol(type, yyline, yycolumn, value);
    }
+    public int getLine() { return  yyline; }
+    public int getColumn() {return yycolumn; }
 %}
 
 Letters =[a-z]|[A-Z]
@@ -32,8 +34,8 @@ String ="\""([^\n\"\\]*(\\[.\n])*)*"\""
 
 White =[\t|\n|" "|\r\n]+
 
-ReservedWord ="void"|"int"|"double"|"bool"|"string"|"class"|"interface"|"null"|"this"|"extends"|"implements"|"for"|"while"|"if"|"else"|"return"|"break"|"New"|"NewArray"|"Print"|"ReadInteger"|"ReadLine"|"Malloc"|"GetByte"|"SetByte" 
-OperatorsPunctuation ="+"|"-"|"*"|"/"|"%"|"<"|"<="|">"|">="|"="|"=="|"!="|"&&"|"||"|"!"|";"|","|"."|"["|"]"|"("|")"|"{"|"}"|"[]"|"()"|"{}"
+ReservedWord ="void"|"int"|"double"|"bool"|"string"|"class"|"interface"|"null"|"this"|"extends"|"implements"|"for"|"while"|"if"|"else"|"return"|"break"|"New"|"NewArray"|"Print"|"ReadInteger"|"ReadLine"|"Malloc"|"GetByte"|"SetByte"|"const"|"include" 
+OperatorsPunctuation ="+"|"-"|"*"|"/"|"%"|"<"|"<="|">"|">="|"="|"=="|"!="|"&&"|"||"|"!"|";"|","|"."|"["|"]"|"("|")"|"{"|"}"|"[]"|"()"|"{}"|"#"
 
 Sdouble =({Digits})+"."({Digits})*
 EDouble =({Sdouble})("E"|"e")("+"|"-"|"")({Digits}+)
@@ -43,6 +45,9 @@ Hexadecimal =("0x"|"0X"){HexElements}+
 Decimal ={Digits}+
 
 Bool ="true"|"false"
+
+Extensions = ".txt"
+FileName= ({Identifiers})({Extensions})
 
 %{
     /*public String lexeme = "";
@@ -77,7 +82,7 @@ Bool ="true"|"false"
             line = yyline;
             return  StringConstant;*/
             result_lexical_analyzer+= "line: "+yyline+" column: "+yycolumn+" token string_constant: \""+yytext()+"\" \n";
-            return symbol(sym.StringConstant);
+            return symbol(sym.StringConstant, yytext());
          }
 {ReservedWord} { 
                  /* lexeme = yytext();
@@ -89,57 +94,61 @@ Bool ="true"|"false"
                   switch(yytext())
                   {
                       case "void":
-                        return symbol(sym.voidd);
+                        return symbol(sym.voidd, yytext());
                       case "int":
-                        return symbol(sym.intt);
+                        return symbol(sym.intt, yytext());
                       case "double":
-                        return symbol(sym.doublee);
+                        return symbol(sym.doublee, yytext());
                       case "bool":
-                        return symbol(sym.booll);
+                        return symbol(sym.booll, yytext());
                       case "string":
-                        return symbol(sym.stringg);
+                        return symbol(sym.stringg, yytext());
                       case "class":
-                        return symbol(sym.classs);
+                        return symbol(sym.classs, yytext());
                       case "interface":
-                        return symbol(sym.interfacee);
+                        return symbol(sym.interfacee, yytext());
                       case "null":
-                        return symbol(sym.nulll);
+                        return symbol(sym.nulll, yytext());
                       case "this":
-                        return symbol(sym.thiss);
+                        return symbol(sym.thiss, yytext());
                       case "extends":
-                        return symbol(sym.extendss);
+                        return symbol(sym.extendss, yytext());
                       case "implements":
-                        return symbol(sym.implementss);
+                        return symbol(sym.implementss, yytext());
                       case "for":
-                        return symbol(sym.forr);
+                        return symbol(sym.forr, yytext());
                       case "while":
-                        return symbol(sym.whilee);
+                        return symbol(sym.whilee, yytext());
                       case "if":
-                        return symbol(sym.iff);
+                        return symbol(sym.iff, yytext());
                       case "else":
-                        return symbol(sym.elsee);
+                        return symbol(sym.elsee, yytext());
                       case "return":
-                        return symbol(sym.returnn);
+                        return symbol(sym.returnn, yytext());
                       case "break":
-                        return symbol(sym.breakk);
+                        return symbol(sym.breakk, yytext());
                       case "New":
-                        return symbol(sym.neww);
+                        return symbol(sym.neww, yytext());
                       case "NewArray":
-                        return symbol(sym.newarray);
+                        return symbol(sym.newarray, yytext());
                       case "Print":
-                        return symbol(sym.printt);
+                        return symbol(sym.printt, yytext());
                       case "ReadInteger":
-                        return symbol(sym.readinteger);
+                        return symbol(sym.readinteger, yytext());
                       case "ReadLine":
-                        return symbol(sym.readline);
+                        return symbol(sym.readline, yytext());
                       case "Malloc":
-                        return symbol(sym.mallocc);
+                        return symbol(sym.mallocc, yytext());
                       case "GetByte":
-                        return symbol(sym.getBytee);
-                        case "SetByte":
-                        return symbol(sym.setBytee);
+                        return symbol(sym.getBytee, yytext());
+                    case "SetByte":
+                        return symbol(sym.setBytee, yytext());
+                    case "include":
+                        return symbol(sym.includee, yytext());
+                    case "const":
+                        return symbol(sym.constt, yytext());
                       default:
-                        return symbol(sym.notfound);
+                        return symbol(sym.notfound, yytext());
                   }
                }
 {Sdouble}|{EDouble} {
@@ -148,7 +157,7 @@ Bool ="true"|"false"
                         line = yyline;
                         return DoubleConstant;*/
                         result_lexical_analyzer+= "line: "+yyline+" column: "+yycolumn+" token double_constant: \""+yytext()+"\" \n";
-                        return symbol(sym.DoubleConstant);
+                        return symbol(sym.DoubleConstant, yytext());
                      }
 
 {Hexadecimal}|{Decimal} {
@@ -157,7 +166,7 @@ Bool ="true"|"false"
                            line = yyline;
                            return IntegerConstant;*/
                            result_lexical_analyzer+= "line: "+yyline+" column: "+yycolumn+" token integer_constant: \""+yytext()+"\" \n";
-                           return symbol(sym.IntegerConstant);
+                           return symbol(sym.IntegerConstant, yytext());
                         }
 
 {Bool} { 
@@ -166,7 +175,7 @@ Bool ="true"|"false"
          line = yyline;
          return BoolConstant;*/
          result_lexical_analyzer+= "line: "+yyline+" column: "+yycolumn+" token bool_constant: \""+yytext()+"\" \n";
-         return symbol(sym.BoolConstant);
+         return symbol(sym.BoolConstant, yytext());
       }
 
 {OperatorsPunctuation} {
@@ -178,64 +187,70 @@ Bool ="true"|"false"
                            switch(yytext())
                             {
                                 case "+":
-                                    return symbol(sym.plus);
+                                    return symbol(sym.plus, yytext());
                                 case "-":
-                                    return symbol(sym.minus);
+                                    return symbol(sym.minus, yytext());
                                 case "*":
-                                    return symbol(sym.times);
+                                    return symbol(sym.times, yytext());
                                 case "/":
-                                    return symbol(sym.div);
+                                    return symbol(sym.div, yytext());
                                 case "%":
-                                    return symbol(sym.percentage);
+                                    return symbol(sym.percentage, yytext());
                                 case "<":
-                                    return symbol(sym.smaller);
+                                    return symbol(sym.smaller, yytext());
                                 case "<=":
-                                    return symbol(sym.smallerEquals);
+                                    return symbol(sym.smallerEquals, yytext());
                                 case ">":
-                                    return symbol(sym.greater);
+                                    return symbol(sym.greater, yytext());
                                 case ">=":
-                                    return symbol(sym.greaterEquals);
+                                    return symbol(sym.greaterEquals, yytext());
                                 case "=":
-                                    return symbol(sym.assignment);
+                                    return symbol(sym.assignment, yytext());
                                 case "==":
-                                    return symbol(sym.equals);
+                                    return symbol(sym.equals, yytext());
                                 case "!=":
-                                    return symbol(sym.notequals);
+                                    return symbol(sym.notequals, yytext());
                                 case "&&":
-                                    return symbol(sym.and);
+                                    return symbol(sym.and, yytext());
                                 case "||":
-                                    return symbol(sym.or);
+                                    return symbol(sym.or, yytext());
                                 case "!":
-                                    return symbol(sym.not);
+                                    return symbol(sym.not, yytext());
                                 case ";":
-                                    return symbol(sym.dotcomma);
+                                    return symbol(sym.dotcomma, yytext());
                                 case ",":
-                                    return symbol(sym.comma);
+                                    return symbol(sym.comma, yytext());
                                 case ".":
-                                    return symbol(sym.point);
+                                    return symbol(sym.point, yytext());
                                 case "[":
                                 
-                                    return symbol(sym.claspfirst);
+                                    return symbol(sym.claspfirst, yytext());
                                 case "]":
-                                    return symbol(sym.claspsecond);
+                                    return symbol(sym.claspsecond, yytext());
                                 case "(":
-                                    return symbol(sym.parentesisfirst);
+                                    return symbol(sym.parentesisfirst, yytext());
                                 case ")":
-                                    return symbol(sym.parentesissecond);
+                                    return symbol(sym.parentesissecond, yytext());
                                 case "{":
-                                    return symbol(sym.bracketfirst);
+                                    return symbol(sym.bracketfirst, yytext());
                                 case "}":
-                                    return symbol(sym.bracketsecond);
+                                    return symbol(sym.bracketsecond, yytext());
                                 case "[]":
-                                    return symbol(sym.clasps);
+                                    return symbol(sym.clasps, yytext());
                                 case "()":
-                                    return symbol(sym.parentesis);
+                                    return symbol(sym.parentesis, yytext());
                                 case "{}":
-                                    return symbol(sym.brackets);
+                                    return symbol(sym.brackets, yytext());
+                                case "#":
+                                    return symbol(sym.numerall, yytext());
                                 default:
-                                    return symbol(sym.notfound);
+                                    return symbol(sym.notfound, yytext());
                             }
                        }
+{FileName} {
+    result_lexical_analyzer+= "line: "+yyline+" column: "+yycolumn+" token file_name: \""+yytext()+"\" \n";
+    return symbol(sym.fileNamee, yytext());
+         }
 {Identifiers} { 
                /*lexeme = yytext();
                column = yycolumn;
@@ -247,7 +262,7 @@ Bool ="true"|"false"
 
                }*/
                result_lexical_analyzer+= "line: "+yyline+" column: "+yycolumn+" token identifier: \""+yytext()+"\" \n";
-               return symbol(sym.Identifierr);
+               return symbol(sym.Identifierr, yytext());
               }
 //}
 

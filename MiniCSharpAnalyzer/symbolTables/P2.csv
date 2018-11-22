@@ -1,0 +1,25 @@
+VARIABLES Y CONSTANTES 
+Tipo,Identificador,Ambiente,Valor
+int,a,d4de86a5-3dbf-472b-b,null
+int,b,d4de86a5-3dbf-472b-b,null
+int,c,d4de86a5-3dbf-472b-b,3
+int,m1,01d5f2cd-b5ef-45a9-b,null
+int,m2,01d5f2cd-b5ef-45a9-b,null
+int,m3,01d5f2cd-b5ef-45a9-b,null
+Parser,MyParser,01d5f2cd-b5ef-45a9-b,null
+
+FUNCIONES 
+Su ambiente,Tipo,Identificador,Ambiente generado,Parametros
+27f2a5cb-23b0-43b1-8,int,f1,d4de86a5-3dbf-472b-b,int a; int b; int c; 
+27f2a5cb-23b0-43b1-8,void,main,01d5f2cd-b5ef-45a9-b,
+
+CLASES E INTERFASES 
+Tipo,Identificador,Ambiente generado
+class,Program,27f2a5cb-23b0-43b1-8
+
+LOG DE ERRORES
+Columna,Fila,Contenido,**ERROR**
+7,3,a > b,No se puede operar ya que uno de los valores no esta asignado o instanciado
+4,11,m2 = MyParser,Los tipos de datos no coinciden. Tipo int con Parser
+4,12,m1 = MyParser,Los tipos de datos no coinciden. Tipo int con Parser
+
